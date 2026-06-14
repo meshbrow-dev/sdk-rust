@@ -130,12 +130,8 @@ impl Client {
 
     /// Get session details.
     pub async fn get_session(&self, id: &str) -> Result<Session, Error> {
-        self.request(
-            reqwest::Method::GET,
-            &format!("/v1/sessions/{}", id),
-            None,
-        )
-        .await
+        self.request(reqwest::Method::GET, &format!("/v1/sessions/{}", id), None)
+            .await
     }
 
     /// List all active sessions.
@@ -247,11 +243,7 @@ impl Client {
     }
 
     /// Execute JavaScript.
-    pub async fn execute(
-        &self,
-        session_id: &str,
-        script: &str,
-    ) -> Result<ExecuteResponse, Error> {
+    pub async fn execute(&self, session_id: &str, script: &str) -> Result<ExecuteResponse, Error> {
         self.request(
             reqwest::Method::POST,
             &format!("/v1/sessions/{}/execute", session_id),

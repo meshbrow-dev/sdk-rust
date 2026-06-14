@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use meshbrow::*;
     use meshbrow::Client;
+    use meshbrow::*;
     use serde_json::json;
     use wiremock::matchers::{body_json, header, method, path};
     use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -18,18 +18,16 @@ mod tests {
             .and(path("/v1/sessions"))
             .and(header("Authorization", "Bearer test-api-key"))
             .and(header("Content-Type", "application/json"))
-            .respond_with(
-                ResponseTemplate::new(201).set_body_json(json!({
-                    "data": {
-                        "id": "mb_test1",
-                        "status": "ready",
-                        "cdp_endpoint": "wss://api.meshbrow.dev/cdp/mb_test1",
-                        "token": "tok1",
-                        "created_at": "2026-06-14T00:00:00Z",
-                        "expires_at": "2026-06-14T01:00:00Z"
-                    }
-                })),
-            )
+            .respond_with(ResponseTemplate::new(201).set_body_json(json!({
+                "data": {
+                    "id": "mb_test1",
+                    "status": "ready",
+                    "cdp_endpoint": "wss://api.meshbrow.dev/cdp/mb_test1",
+                    "token": "tok1",
+                    "created_at": "2026-06-14T00:00:00Z",
+                    "expires_at": "2026-06-14T01:00:00Z"
+                }
+            })))
             .mount(&server)
             .await;
 
@@ -52,11 +50,9 @@ mod tests {
                 "stealth": "max",
                 "proxy": {"type": "residential", "country": "US"}
             })))
-            .respond_with(
-                ResponseTemplate::new(201).set_body_json(json!({
-                    "data": {"id": "mb_proxy1", "status": "ready"}
-                })),
-            )
+            .respond_with(ResponseTemplate::new(201).set_body_json(json!({
+                "data": {"id": "mb_proxy1", "status": "ready"}
+            })))
             .mount(&server)
             .await;
 
@@ -186,7 +182,9 @@ mod tests {
 
         Mock::given(method("POST"))
             .and(path("/v1/sessions/mb_1/click"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(json!({"data": {"clicked": true}})))
+            .respond_with(
+                ResponseTemplate::new(200).set_body_json(json!({"data": {"clicked": true}})),
+            )
             .mount(&server)
             .await;
 
@@ -200,7 +198,9 @@ mod tests {
 
         Mock::given(method("POST"))
             .and(path("/v1/sessions/mb_1/type"))
-            .respond_with(ResponseTemplate::new(200).set_body_json(json!({"data": {"typed": true}})))
+            .respond_with(
+                ResponseTemplate::new(200).set_body_json(json!({"data": {"typed": true}})),
+            )
             .mount(&server)
             .await;
 
@@ -235,9 +235,7 @@ mod tests {
 
         Mock::given(method("POST"))
             .and(path("/v1/sessions/mb_1/execute"))
-            .respond_with(
-                ResponseTemplate::new(200).set_body_json(json!({"data": {"result": 42}})),
-            )
+            .respond_with(ResponseTemplate::new(200).set_body_json(json!({"data": {"result": 42}})))
             .mount(&server)
             .await;
 
@@ -328,10 +326,9 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/v1/sessions/mb_1"))
-            .respond_with(
-                ResponseTemplate::new(401)
-                    .set_body_json(json!({"error": {"code": "unauthorized", "message": "Invalid API key"}})),
-            )
+            .respond_with(ResponseTemplate::new(401).set_body_json(
+                json!({"error": {"code": "unauthorized", "message": "Invalid API key"}}),
+            ))
             .mount(&server)
             .await;
 
@@ -352,10 +349,9 @@ mod tests {
 
         Mock::given(method("GET"))
             .and(path("/v1/sessions/nonexistent"))
-            .respond_with(
-                ResponseTemplate::new(404)
-                    .set_body_json(json!({"error": {"code": "not_found", "message": "session not found"}})),
-            )
+            .respond_with(ResponseTemplate::new(404).set_body_json(
+                json!({"error": {"code": "not_found", "message": "session not found"}}),
+            ))
             .mount(&server)
             .await;
 
